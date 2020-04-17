@@ -1,64 +1,101 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 
 const ContactForm = () => {
-  const [data, setData] = useState();
-  const { register, errors, handleSubmit, reset } = useForm({
-    mode: "onBlur"
-  });
-  const onSubmit = data => {
-    setData(data);
-  };
+    const [data, setData] = useState();
+    const { register, errors, handleSubmit, reset } = useForm({
+        mode: "onBlur",
+    });
 
-  return (
-    <div className="App">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="firstName">First Name*</label>
-          <input
-            name="firstName"
-            placeholder="bill"
-            ref={register({ required: true, maxLength: 3 })}
-          />
-          {errors.firstName && (
-            <p>Looks like there was an error: {errors.firstName.type}</p>
-          )}
-        </div>
+    useEffect(() => {
+        axios
+            .post("https://reqres.in/api/users", {
+                data,
+            })
+            .then(function (response) {
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }, [data]);
 
-        <div>
-          <label htmlFor="lastName">Last Name*</label>
-          <input
-            name="lastName"
-            placeholder="luo"
-            ref={register({ required: true })}
-          />
-          {errors.lastName && (
-            <p>Looks like there was an error: {errors.lastName.type}</p>
-          )}
-        </div>
+    const onSubmit = (data) => {
+        setData(data);
+    };
 
-        <div>
-          <label htmlFor="email" placeholder="bluebill1049@hotmail.com">
-            Email*
-          </label>
-          <input name="email" ref={register({ required: true })} />
-          {errors.email && (
-            <p>Looks like there was an error: {errors.email.type}</p>
-          )}
+    return (
+        <div className="App">
+            <form onSubmit={handleSubmit(onSubmit)} data-testid="form">
+                <div>
+                    <label htmlFor="firstName">First Name*</label>
+                    <input
+                        name="firstName"
+                        id="firstName"
+                        placeholder="bill"
+                        ref={register({ required: true, maxLength: 15 })}
+                    />
+                    {errors.firstName && (
+                        <p>
+                            Looks like there was an error:{" "}
+                            {errors.firstName.type}
+                        </p>
+                    )}
+                </div>
+
+                <div>
+                    <label htmlFor="lastName">Last Name*</label>
+                    <input
+                        name="lastName"
+                        id="lastName"
+                        placeholder="luo"
+                        ref={register({ required: true })}
+                    />
+                    {errors.lastName && (
+                        <p>
+                            Looks like there was an error:{" "}
+                            {errors.lastName.type}
+                        </p>
+                    )}
+                </div>
+
+                <div>
+                    <label
+                        htmlFor="email"
+                        placeholder="bluebill1049@hotmail.com"
+                    >
+                        Email*
+                    </label>
+                    <input
+                        name="email"
+                        id="email"
+                        ref={register({ required: true })}
+                    />
+                    {errors.email && (
+                        <p>
+                            Looks like there was an error: {errors.email.type}
+                        </p>
+                    )}
+                </div>
+                <div>
+                    <label htmlFor="message">Message</label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        ref={register({ required: false })}
+                    />
+                </div>
+                {data && (
+                    <pre style={{ textAlign: "left", color: "white" }}>
+                        <p data-testid="data-success">Data</p>
+                        {JSON.stringify(data, null, 2)}
+                    </pre>
+                )}
+                <input type="submit" />
+            </form>
         </div>
-        <div>
-          <label htmlFor="message">Message</label>
-          <textarea name="message" ref={register({ required: false })} />
-        </div>
-        {data && (
-          <pre style={{ textAlign: "left", color: "white" }}>
-            {JSON.stringify(data, null, 2)}
-          </pre>
-        )}
-        <input type="submit" />
-      </form>
-    </div>
-  );
+    );
 };
 
 export default ContactForm;
