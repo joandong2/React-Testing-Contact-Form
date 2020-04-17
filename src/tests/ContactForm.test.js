@@ -9,15 +9,13 @@ test("renders ContactForm", () => {
 test("check if fields are working", () => {
     const { getByLabelText } = render(<ContactForm />);
     const fname = getByLabelText(/first name/i);
-    fireEvent.change(fname, { target: { value: "Johhhnnnyyyy" } });
-
     const lname = getByLabelText(/last name/i);
-    fireEvent.change(lname, { target: { value: "Doe" } });
-
     const email = getByLabelText(/email/i);
-    fireEvent.change(email, { target: { value: "johndoe@me.com" } });
-
     const message = getByLabelText(/message/i);
+
+    fireEvent.change(fname, { target: { value: "Johhhnnnyyyy" } });
+    fireEvent.change(lname, { target: { value: "Doe" } });
+    fireEvent.change(email, { target: { value: "johndoe@me.com" } });
     fireEvent.change(message, { target: { value: "Lorem ipsum dolor" } });
 
     expect(fname.value).toBe("Johhhnnnyyyy");
@@ -31,10 +29,12 @@ test("form submit is firing", async () => {
     const { getByTestId } = render(<ContactForm onSubmit={onSubmit} />);
     fireEvent.submit(getByTestId("form"));
 
-    // When testing, code that causes React state updates should be wrapped into act(...):
-    // This means that something changed for state inside the test, we need to wait for these changes
+    // when testing, code that causes React state updates should be wrapped into act(...):
+    // this means that something changed for state inside the test, we need to wait for these changes
     // if we remove wait, eexpect would become asych thus firing together with onSubmit resulting false
     wait(() => {
         expect(onSubmit).toHaveBeenCalled();
     });
+
+    //expect(getByText(/submit/i)).toBeInTheDocument();
 });

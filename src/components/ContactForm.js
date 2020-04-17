@@ -88,11 +88,11 @@ const ContactForm = () => {
                 </div>
                 {data && (
                     <pre style={{ textAlign: "left", color: "white" }}>
-                        <p data-testid="data-success">Data</p>
+                        <p data-testid="data">Data</p>
                         {JSON.stringify(data, null, 2)}
                     </pre>
                 )}
-                <input type="submit" />
+                <input type="submit" value="Submit" data-testid="submit" />
             </form>
         </div>
     );
